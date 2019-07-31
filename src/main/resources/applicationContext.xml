@@ -1,0 +1,43 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+           http://www.springframework.org/schema/beans/spring-beans-2.5.xsd
+           http://www.springframework.org/schema/context
+           http://www.springframework.org/schema/context/spring-context-2.5.xsd
+           http://www.springframework.org/schema/tx
+           http://www.springframework.org/schema/tx/spring-tx-4.0.xsd">
+
+   <!--配置数据源-->
+    <context:property-placeholder location="db.properties"/>
+    <bean id="datasource" class="com.mchange.v2.c3p0.ComboPooledDataSource">
+        <property name="driverClass" value="${jdbc.driver}"></property>
+        <property name="jdbcUrl" value="${jdbc.url}"></property>
+        <property name="user" value="${jdbc.user}"></property>
+        <property name="password" value="${jdbc.password}"></property>
+    </bean>
+
+    <!--事务管理器-->
+    <bean id="dataSourceTransactionManger" class="org.springframework.jdbc.datasource.DataSourceTransactionManager" >
+
+        <property name="dataSource" ref="datasource"></property>
+    </bean>
+    <tx:annotation-driven transaction-manager="dataSourceTransactionManger"></tx:annotation-driven>
+
+
+    <!--切换到plus只需要替换这里SqlSessionFactoryBean换成MybatisSqlSessionFactoryBean-->
+    <bean id="sqlSessionFactoryBean" class="com.baomidou.mybatisplus.extension.spring.MybatisSqlSessionFactoryBean">
+
+        <property name="dataSource" ref="datasource"></property>
+        <property name="configLocation" value="classpath:mybatis.xml"></property>
+        <!--别名，类名首字母小写-->
+        <property name="typeAliasesPackage" value="com.zlx.pls.entity"></property>
+    </bean>
+
+    <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
+        <property name="basePackage" value="com.zlx.pls.mapper"/>
+     </bean>
+
+
+</beans>

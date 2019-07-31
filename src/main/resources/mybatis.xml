@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+<configuration>
+
+   <!--写到Spring里面也行，若果不写，会先找slf4j，apache commons logging，log4j 2，log4j，jdk log-->
+    <settings>
+        <setting name="logImpl" value="LOG4J"/>
+        <!--默认为true，将字段加上下划线-->
+        <setting name="mapUnderscoreToCamelCase" value="true"></setting>
+    </settings>
+
+   
+</configuration>
