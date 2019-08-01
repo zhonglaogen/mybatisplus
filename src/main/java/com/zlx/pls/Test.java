@@ -1,5 +1,6 @@
 package com.zlx.pls;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.zlx.pls.entity.User;
 import com.zlx.pls.mapper.UserMapper;
@@ -14,10 +15,10 @@ import java.util.Map;
 
 public class Test {
 
-    public static void testInsert(){
-        ClassPathXmlApplicationContext context=new ClassPathXmlApplicationContext("applicationContext.xml");
+    public static void testInsert() {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
         UserMapper userMapper = context.getBean("userMapper", UserMapper.class);
-        User zlx = new User("ssx", "11");
+        User zlx = new User("ssdx", "11");
         int insert = userMapper.insert(zlx);
         System.out.println(insert);
 //        自动会会写主键
@@ -26,24 +27,62 @@ public class Test {
 
     }
 
-        public static void testDleList(){
-            ClassPathXmlApplicationContext context=new ClassPathXmlApplicationContext("applicationContext.xml");
-            UserMapper userMapper = context.getBean("userMapper", UserMapper.class);
-            List<Integer> list=new ArrayList<>();
-            list.add(1);
-            list.add(3);
-            //删除集合中的内容
-            userMapper.deleteBatchIds(list);
-        }
-        public static void testDelMap(){
-            ClassPathXmlApplicationContext context=new ClassPathXmlApplicationContext("applicationContext.xml");
-            UserMapper userMapper = context.getBean("userMapper", UserMapper.class);
-            Map<String,Object> map=new HashMap<>();
-            map.put("id",1);
-            map.put("name","zlx");//and 的效果
-            userMapper.deleteByMap(map);
+    //查询是QueryWrapper，更改删除添加是updateWrapper,last无脑拼接
+    public static void testQueryWrap() {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        UserMapper userMapper = context.getBean("userMapper", UserMapper.class);
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        //.默认是and,用lamba表达式加括号，
+        userQueryWrapper.between("id", 2, 5)
+                .or(i -> i.ge("age", 11)
+                        .le("age", 20))
+        .like("name","s").last("limit 2,1");
+        List<User> users = userMapper.selectList(userQueryWrapper);
+        System.out.println(users);
 
-        }
+
+    }
+
+    public static void testDleList() {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        UserMapper userMapper = context.getBean("userMapper", UserMapper.class);
+        List<Integer> list = new ArrayList<>();
+        list.add(1);
+        list.add(3);
+        //删除集合中的内容
+        userMapper.deleteBatchIds(list);
+    }
+
+    public static void testDelMap() {
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        UserMapper userMapper = context.getBean("userMapper", UserMapper.class);
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", 1);
+        map.put("name", "zlx");//and 的效果
+        userMapper.deleteByMap(map);
+
+    }
+
+    //ar编程模式，不需要mapper，实体类直接操作数据库，只需要实体类继承
+    public static void testAR(){
+        //数据库信息在Spring里面，要写这句话
+        //必须在ioc容器里AR
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        User user=new User("ooo","30");
+        user.insert();
+    }
+    public static void testDeleteAR(){
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        User user=new User();
+        user.deleteById();//主键是序列化类型,可以接收8个基本类型和String，都继承自它，T和Object也行
+        QueryWrapper<User> userQueryWrapper=new QueryWrapper<>();
+        userQueryWrapper.lambda().like(User::getUserName,"s");
+        //相当于
+//        userQueryWrapper.like("name","s");
+
+        List<User> users = user.selectList(userQueryWrapper);
+        System.out.println(users);
+    }
 
     public static void main(String[] args) throws SQLException {
 //        ClassPathXmlApplicationContext context=new ClassPathXmlApplicationContext("applicationContext.xml");
@@ -52,6 +91,10 @@ public class Test {
 //        Connection connection =
 //                datasource.getConnection();
 //        System.out.println("================="+connection);
-        testInsert();
+//        testInsert();
+
+//        testQueryWrap();/
+        testDeleteAR();
     }
+
 }

@@ -4,16 +4,29 @@ import com.baomidou.mybatisplus.annotation.IdType;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.extension.activerecord.Model;
 
 @TableName("user")
-public class User {
+public class User extends Model<User> {
 //    声明哪个是主键，并且自增(依赖数据库的自增)
-    @TableId(value = "userId",type = IdType.AUTO)
+    @TableId(value = "id",type = IdType.AUTO)
     private int userId;
     @TableField(value = "name")
     private String userName;
     @TableField(value = "age")
     private String userAge;
+
+    //表中没有这个字段,
+    @TableField(exist = false)
+    private String sex;
+
+    public String getSex() {
+        return sex;
+    }
+
+    public void setSex(String sex) {
+        this.sex = sex;
+    }
 
     public User() {
     }
