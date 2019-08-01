@@ -41,6 +41,7 @@
             <list>
                 <!--分页插件-->
                 <bean class="com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor">
+                    <!--阻断有害sql-->
                     <property name="sqlParserList">
                         <list>
                             <bean class="com.baomidou.mybatisplus.extension.parsers.BlockAttackSqlParser">
