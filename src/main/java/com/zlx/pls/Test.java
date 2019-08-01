@@ -1,6 +1,8 @@
 package com.zlx.pls;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import com.zlx.pls.entity.User;
 import com.zlx.pls.mapper.UserMapper;
@@ -84,6 +86,27 @@ public class Test {
         System.out.println(users);
     }
 
+    //分页
+    public static void testPage(){
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        User user=new User();
+        //第二页，三条数据
+        //limit：第几行数据，一共显示几条
+        IPage<User> userIPage = user.selectPage(new Page<User>(2, 3), null);
+        System.out.println("当前页数据"+userIPage.getRecords());
+        System.out.println("当前页码"+userIPage.getCurrent());
+        System.out.println("所有页"+userIPage.getPages());
+        System.out.println("总数"+userIPage.getTotal());
+        System.out.println("当前页数量"+userIPage.getSize());
+
+    }
+    //阻断拦截器,Prohibition of full table deletion
+    public static void testDelAll(){
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext("applicationContext.xml");
+        User user=new User();
+        user.delete(null);
+    }
+
     public static void main(String[] args) throws SQLException {
 //        ClassPathXmlApplicationContext context=new ClassPathXmlApplicationContext("applicationContext.xml");
 //        ComboPooledDataSource datasource = (ComboPooledDataSource) context.getBean("datasource");
@@ -94,7 +117,7 @@ public class Test {
 //        testInsert();
 
 //        testQueryWrap();/
-        testDeleteAR();
+        testPage();
     }
 
 }

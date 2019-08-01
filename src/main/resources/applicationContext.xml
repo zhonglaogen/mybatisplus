@@ -16,6 +16,8 @@
         <property name="jdbcUrl" value="${jdbc.url}"></property>
         <property name="user" value="${jdbc.user}"></property>
         <property name="password" value="${jdbc.password}"></property>
+
+
     </bean>
 
     <!--事务管理器-->
@@ -33,11 +35,39 @@
         <property name="configLocation" value="classpath:mybatis.xml"></property>
         <!--别名，类名首字母小写-->
         <property name="typeAliasesPackage" value="com.zlx.pls.entity"></property>
+        <!--mybatis拦截器-->
+        <!--和写到mybatis的plug里面一样-->
+        <property name="plugins" >
+            <list>
+                <!--分页插件-->
+                <bean class="com.baomidou.mybatisplus.extension.plugins.PaginationInterceptor">
+                    <property name="sqlParserList">
+                        <list>
+                            <bean class="com.baomidou.mybatisplus.extension.parsers.BlockAttackSqlParser">
+
+                            </bean>
+                        </list>
+                    </property>
+                </bean>
+
+                <!--性能优化,格式化显示sql，显示sql执行时间-->
+                <bean class="com.baomidou.mybatisplus.extension.plugins.PerformanceInterceptor">
+                    <property name="maxTime" value="10000"></property>
+                    <property name="format" value="true"></property>
+                </bean>
+            </list>
+
+        </property>
     </bean>
 
+
+    <!--扫描包-->
     <bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
         <property name="basePackage" value="com.zlx.pls.mapper"/>
      </bean>
 
+    
+
+    
 
 </beans>
